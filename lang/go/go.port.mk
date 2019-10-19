@@ -56,7 +56,7 @@ TEST_TARGET ?=		${ALL_TARGET}
 SEPARATE_BUILD ?=	Yes
 WRKSRC ?=		${MODGO_WORKSPACE}/src/${ALL_TARGET}
 
-MODGO_SETUP_WORKSPACE =	mkdir -p ${WRKSRC:H}; mv ${MODGO_SUBDIR} ${WRKSRC};
+MODGO_SETUP_WORKSPACE ?=	mkdir -p ${WRKSRC:H}; mv ${MODGO_SUBDIR} ${WRKSRC};
 
 CATEGORIES +=		lang/go
 
@@ -96,7 +96,10 @@ RUN_DEPENDS +=		${MODGO_RUN_DEPENDS}
 MODGO_TEST_TARGET =	${MODGO_TEST_CMD} ${TEST_TARGET}
 
 .if empty(CONFIGURE_STYLE)
+
+.  if !empty(MODGO_SETUP_WORKSPACE)
 MODGO_pre-configure +=	${MODGO_SETUP_WORKSPACE}
+.  endif
 
 .  if !target(do-build)
 do-build:
@@ -112,4 +115,5 @@ do-install:
 do-test:
 	${MODGO_TEST_TARGET}
 .  endif
+
 .endif
